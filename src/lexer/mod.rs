@@ -120,6 +120,8 @@ let add = fn(x, y) {
 let result = add(five, ten);
 !-/*5;
 5 < 10 > 5;
+10 == 10; 
+10 != 9;
 "#;
         let test_array = vec![
             Token::LET,
@@ -170,6 +172,16 @@ let result = add(five, ten);
             Token::GT,
             Token::INT(5),
             Token::SEMICOLON,
+            Token::INT(10),
+            Token::EQ,
+            Token::INT(10),
+            Token::SEMICOLON,
+            Token::INT(10),
+            Token::NOTEQ,
+            Token::INT(9),
+            Token::SEMICOLON,
+
+
         ];
         let mut lexerr = Lexer::new(&input);
         for tt in test_array.iter() {

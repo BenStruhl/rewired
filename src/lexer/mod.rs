@@ -58,7 +58,7 @@ impl<'a> Lexer<'a> {
         if self.read_position >= self.input.len() {
             return 0;
         } else {
-            return l.input[l.read_position];
+            return self.input.as_bytes()[self.read_position];
         }
     }
 
@@ -67,7 +67,7 @@ impl<'a> Lexer<'a> {
         let tok: Token= match self.ch as char {
             '0' ... '9' => self.read_number(),
             'a'...'z' | 'A'...'Z' | '_'  => self.read_identifier(),
-            '='   => { if (self.peek_char as char) == '=' {
+            '='   => { if (self.peek_char() as char) == '=' {
                              self.read_char();
                              Token::EQ
                          } else {
@@ -77,13 +77,13 @@ impl<'a> Lexer<'a> {
             '<'   => Token::LT,
             '>'   => Token::GT,
             '-'   => Token::MINUS,
-            '!'   =>  { if (self.peek_char as char) == '=' {
+            '!'   =>  { if (self.peek_char() as char) == '=' {
                              self.read_char();
-                             Token::NOT_EQ
+                             Token::NOTEQ
                          } else {
                              Token::BANG
                          }
-                     },,
+                     },
             '*'   => Token::ASTERISK,
             '/'   => Token::SLASH,
             ';'   => Token::SEMICOLON,
@@ -120,15 +120,6 @@ let add = fn(x, y) {
 let result = add(five, ten);
 !-/*5;
 5 < 10 > 5;
-
-
-if (5 < 10) {
-    return true;
-} else {
-    return false;
-}
-10 == 10;
-10 != 9;
 "#;
         let test_array = vec![
             Token::LET,
@@ -179,40 +170,6 @@ if (5 < 10) {
             Token::GT,
             Token::INT(5),
             Token::SEMICOLON,
-            Token::IF,
-            Token::LPAREN,
-            Token::INT(5),
-            Token::LT,
-            Token::INT(10),
-            Token::RPAREN,
-            Token::LBRACE,
-            Token::RETURN,
-            Token::BOOL(true),
-            Token::SEMICOLON,
-            Token::RBRACE,
-            Token::ELSE,
-            Token::LBRACE,
-            Token::RETURN,
-            Token::BOOL(false),
-            Token::SEMICOLON,
-            Token::RBRACE,
-            Token::INT(10),
-            Token::EQ,
-            Token::INT(10),
-            Token::SEMICOLON,
-            Token::INT(10),
-            Token::NOT_EQ,
-            Token::INT(9),
-            Token::SEMICOLON,
-            Token::INT(10),
-            Token::LT_EQ,
-            Token::INT(10),
-            Token::SEMICOLON,
-            Token::INT(10),
-            Token::GT_EQ,
-            Token::INT(10),
-            Token::SEMICOLON
-            Token::EOF,
         ];
         let mut lexerr = Lexer::new(&input);
         for tt in test_array.iter() {

@@ -1,0 +1,9 @@
+[package]
+name = "rewired"
+version = "0.1.0"
+authors = ["benstruhl <struhl.b@husky.neu.edu>"]
+
+[dependencies]
+
+
+

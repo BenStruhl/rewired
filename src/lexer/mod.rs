@@ -2,7 +2,7 @@ use token::Token;
 use token::lookup_ident;
 
 #[allow(dead_code)]
-struct Lexer<'a> {
+pub struct Lexer<'a> {
     input: &'a str,
     position: usize,
     read_position: usize,
@@ -19,7 +19,7 @@ impl<'a> Lexer<'a> {
         self.position = self.read_position;
         self.read_position += 1;
     } 
-    fn new(input: &'a str) -> Lexer {
+    pub fn new(input: &'a str) -> Lexer {
         let mut l = Lexer {
             input,
             position: 0,
@@ -62,7 +62,7 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn next_token(&mut self) -> Token {
+    pub fn next_token(&mut self) -> Token {
         self.skip_whitespace();
         let tok: Token= match self.ch as char {
             '0' ... '9' => self.read_number(),

@@ -1,5 +1,6 @@
 pub mod lexer;
 pub mod token;
+pub mod repl;
 // #[derive(Debug)]
 // struct Bectangle {
 //     width: u32,
@@ -31,6 +32,9 @@ pub mod token;
 //     }
 // }
 fn main() {
+    println!("Welecome to the Rewired Programming Language!");
+    println!("feel free to type in commands");
+    repl::start();
     // let four = IpAddrKind::V4(String::from("BOB"));
     // let six = IpAddrKind::V6(String::from("GEORGE"));
     // let mut s = String::from("hello");

@@ -1,9 +1,7 @@
 use token::Token;
 use lexer::Lexer;
-
 use std::io;
 use std::io::prelude::*;
-
 
 const PROMPT: &'static str = ">> ";
 

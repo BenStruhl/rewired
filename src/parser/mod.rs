@@ -3,13 +3,13 @@ use lexer::Lexer;
 use token;
 
 pub struct Parser<'a> {
-    pub l: &'a Lexer<'a>,
+    pub l: &'a mut Lexer<'a>,
     pub cur_token: token::Token,
     peek_token: token::Token,
 }
 
 impl<'a> Parser<'a> {
-    pub fn new(mut l: &'a Lexer<'a>) -> Parser {
+    pub fn new(l: &'a mut Lexer<'a>) -> Parser {
         let cur_token = l.next_token();
         let peek_token = l.next_token();
         return Parser {
@@ -46,6 +46,6 @@ let result = add(five, ten);
 10 == 10; 
 10 != 9;
 "#;
-        
+         
     }
 }

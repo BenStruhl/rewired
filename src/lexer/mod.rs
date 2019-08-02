@@ -10,6 +10,7 @@ pub struct Lexer<'a> {
 }
 #[allow(dead_code)]
 impl<'a> Lexer<'a> {
+
     fn read_char(&mut self) {
         if self.read_position >= self.input.len() {
             self.ch = 0;
@@ -19,6 +20,7 @@ impl<'a> Lexer<'a> {
         self.position = self.read_position;
         self.read_position += 1;
     } 
+
     pub fn new(input: &'a str) -> Lexer {
         let mut l = Lexer {
             input,
@@ -39,6 +41,16 @@ impl<'a> Lexer<'a> {
         return Token::INT(self.input[position..self.position].parse::<i64>().unwrap());
     }
 
+    fn peek_read_number(&mut self, position: usize, read_position: usize) -> Token {
+        let mut position_later = position;
+        let mut read_position_acc = read_position;
+        while (self.input.as_bytes()[read_position] as char).is_ascii_digit() {
+            position_later += 1;
+            read_position_acc += 1;
+        }
+        return Token::INT(self.input[position..read_position_acc].parse::<i64>().unwrap());
+    }
+
     fn read_identifier(&mut self) -> Token {
         let position = self.position;
         while (self.ch as char).is_ascii_alphabetic() {
@@ -46,6 +58,16 @@ impl<'a> Lexer<'a> {
         }
         self.read_position -= 1;
         return lookup_ident(&self.input[position..self.position]);
+    }
+
+    fn peek_read_identifier(&mut self, position: usize, read_position: usize) -> Token {
+        let mut position_later = position;
+        let mut read_position_acc = read_position;
+        while (self.input.as_bytes()[read_position] as char).is_ascii_alphabetic() {
+            position_later += 1;
+            read_position_acc += 1;
+        }
+        return lookup_ident(&self.input[position..read_position_acc]);
     }
 
     fn skip_whitespace(&mut self) {
@@ -60,6 +82,55 @@ impl<'a> Lexer<'a> {
         } else {
             return self.input.as_bytes()[self.read_position];
         }
+    }
+
+    pub fn peek_token(&mut self) -> Token {
+        let size = self.input.len();
+        let mut position = self.position;        
+        let mut read_position = position + 1;
+        let mut ch = self.ch;
+        
+        while (ch as char).is_ascii_whitespace() {
+            position += 1;
+            read_position += 1;
+        }
+
+        let tok: Token= match self.ch as char {
+            '0' ... '9' => self.peek_read_number(position, read_position),
+            'a'...'z' | 'A'...'Z' | '_'  => self.peek_read_identifier(position, read_position),
+            '='   => { if (self.input.as_bytes()[read_position] as char) == '=' {
+                             Token::EQ
+                         } else {
+                             Token::ASSIGN
+                         }
+                     },
+            '<'   => Token::LT,
+            '>'   => Token::GT,
+            '-'   => Token::MINUS,
+            '!'   =>  { if (self.input.as_bytes()[read_position] as char) == '=' {
+                             Token::NOTEQ
+                         } else {
+                             Token::BANG
+                         }
+                     },
+            '*'   => Token::ASTERISK,
+            '/'   => Token::SLASH,
+            ';'   => Token::SEMICOLON,
+            '('   => Token::LPAREN,
+            ')'   => Token::RPAREN,
+            ','   => Token::COMMA,
+            '+'   => Token::PLUS,
+            '{'   => Token::LBRACE,
+            '}'   => Token::RBRACE,
+            '\0'  => Token::EOF,
+            _     => Token::ILLEGAL, 
+
+        };
+
+        if tok == Token::ILLEGAL {
+          panic!("cannot match given token to langauge syntax: {}", self.ch)
+        };
+        return tok;
     }
 
     pub fn next_token(&mut self) -> Token {

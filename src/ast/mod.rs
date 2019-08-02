@@ -14,7 +14,7 @@ pub enum Expression  {
     Ident(Identifier),
 }
 
-
+#[derive(Debug)]
 pub struct Program {
     pub statements: Vec<Statement>,
 }
@@ -37,12 +37,9 @@ impl fmt::Display for Statement {
     }
 }
 
-impl Program {
-    fn token_literal(&mut self) -> String {
-        if self.statements.len() > 0 {
-            return self.statements[0].to_string();
-        } else {
-            return String::from("");
-        }
+impl fmt::Display for Program {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(self, f)
     }
-} 
+}
+
